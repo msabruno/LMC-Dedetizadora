@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,8 +11,9 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { IMaskInput } from "react-imask";
 
-export function LoginForm({
+export function RegisterForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
@@ -18,9 +21,9 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Bem vindo</CardTitle>
+          <CardTitle className="text-xl">Criar Conta</CardTitle>
           <CardDescription>
-            Faça Login com sua conta Apple ou Google
+            Registrar com sua conta Apple ou Google
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -34,7 +37,7 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  Login com Apple
+                  Registro com Apple
                 </Button>
                 <Button variant="outline" className="w-full">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -43,7 +46,7 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  Login com Google
+                  Registro com Google
                 </Button>
               </div>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -52,6 +55,15 @@ export function LoginForm({
                 </span>
               </div>
               <div className="grid gap-6">
+                <div className="grid gap-3">
+                  <Label>Nome</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Digite seu nome"
+                    required
+                  />
+                </div>
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -62,25 +74,52 @@ export function LoginForm({
                   />
                 </div>
                 <div className="grid gap-3">
+                  <Label>Telefone</Label>
+                  <IMaskInput 
+                    mask="(00) 00000-0000"
+                    placeholder="(99) 99999-9999"
+                    type="text"
+                    className={cn(
+                            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                            "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+                            "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+                            className
+                          )}
+                    required
+                    
+                  />
+                </div>
+                <div className="grid gap-3">
                   <div className="flex items-center">
                     <Label htmlFor="password">Senha</Label>
                     <a
                       href="#"
                       className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      
+                    > 
                     </a>
                   </div>
                   <Input id="password" type="password" required />
+                  <div className="grid gap-3"></div>
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Confirme sua Senha</Label>
+                    <a
+                      href="#"
+                      className="ml-auto text-sm underline-offset-4 hover:underline"
+                    >  
+                    </a>
+                  </div>
+                  <Input id="password-confirm" type="password" required />
+                  
                 </div>
+                
                 <Button type="submit" className="w-full">
-                  Login
+                  Cadastrar-se
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Não possui uma conta?{" "}
-                <a href="/register" className="underline underline-offset-4">
-                  Cadastrar-se
+                Já possui uma conta?{" "}
+                <a href="/" className="underline underline-offset-4">
+                  Entrar
                 </a>
               </div>
             </div>
