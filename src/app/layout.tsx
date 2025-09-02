@@ -22,6 +22,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Gestão - OS",
   description: "Site de Domínio LMC - Dedetizadora Eireli",
+
 };
 
 // Defina a sua lista de navegação aqui
