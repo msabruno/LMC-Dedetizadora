@@ -55,7 +55,7 @@ const data = {
         },
         {
           title: "Listar OS's",
-          url: "#",
+          url: "/dashboard/os/",
         },
       ],
     },
@@ -66,7 +66,7 @@ const data = {
       items: [
         {
           title: "Cadastrar novo cliente",
-          url: "#",
+          url: "/dashboard/clientes/cadastrar",
         },
         {
           title: "Listar clientes",
