@@ -31,12 +31,10 @@ export function NavMain({
       url: string
     }[]
   }[]
-}) 
-
-{
+}) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Navegação</SidebarGroupLabel>
+      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
