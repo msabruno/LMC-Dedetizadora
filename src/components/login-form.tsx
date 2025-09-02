@@ -1,10 +1,10 @@
-// src/components/login-form.tsx - Versão com a lógica de navegação
 
 "use client";
 import { useRouter } from 'next/navigation';
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -19,15 +19,11 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  // 1. Inicializa o router para podermos navegar programaticamente
   const router = useRouter();
 
-  // 2. Cria a função que será chamada quando o formulário de email/senha for enviado
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault(); // Previne que a página recarregue
+    event.preventDefault(); 
 
-    // Aqui entraria sua lógica para verificar o email e a senha...
-    // Vamos simular que a verificação foi um sucesso.
     const loginValido = true;
 
     if (loginValido) {
@@ -46,11 +42,9 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* 3. Conecta a função 'handleSubmit' ao 'onSubmit' do formulário */}
           <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
-                {/* Botões de login social precisariam de suas próprias funções onClick */}
                 <Button variant="outline" className="w-full" type="button">
                   <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..." fill="currentColor" /></svg>
                   Login com Apple
@@ -84,10 +78,11 @@ export function LoginForm({
                   </div>
                   <Input id="password" type="password" required />
                 </div>
-                {/* Este botão aciona o 'onSubmit' do formulário */}
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
+                <Link rel="stylesheet" href="/dashboard">
+                  <Button type="submit" className="w-full">
+                    Login
+                  </Button>
+                </Link>
               </div>
               <div className="text-center text-sm">
                 Não possui uma conta?{" "}
