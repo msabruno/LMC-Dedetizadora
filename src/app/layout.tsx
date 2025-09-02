@@ -25,32 +25,12 @@ export const metadata: Metadata = {
 
 };
 
-// Defina a sua lista de navegação aqui
 const navItems = [
   {
     title: "Dashboard",
     url: "/dashboard",
     icon: "Home",
-  },
-  {
-    title: "Produtos",
-    url: "/products",
-    icon: "ShoppingCart",
-  },
-  {
-    title: "Configurações",
-    url: "/settings",
-    icon: "Settings",
-    items: [
-      {
-        title: "Perfil",
-        url: "/settings/profile",
-      },
-      {
-        title: "Ajustes",
-        url: "/settings/account",
-      },
-    ],
+    isActive: true
   },
 ];
 
@@ -65,9 +45,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex">
-          <div className="w-64">
-            
-          </div>
           <main className="flex-1 p-6">{children}</main>
         </div>
       </body>
