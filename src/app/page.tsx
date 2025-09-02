@@ -5,7 +5,6 @@ export default function LoginPage() {
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
-<<<<<<< HEAD
         <div className="flex items-center gap-2 self-center font-medium">
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
@@ -13,14 +12,6 @@ export default function LoginPage() {
           LMC Dedetizadora
         </div>
         
-=======
-        <div  className="flex items-center gap-2 self-center font-medium">
-          <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-            <GalleryVerticalEnd className="size-4" />
-          </div>
-          LMC - Dedetizadora
-        </div>
->>>>>>> 2f80958c345a9a8351c1e07d02d05ebfed1bd09b
         <LoginForm />
       </div>
     </div>

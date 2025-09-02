@@ -14,6 +14,16 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
 export default function Page() {
   return (
     <SidebarProvider>
@@ -41,15 +51,36 @@ export default function Page() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
-      </SidebarInset>
+      
+    <Table>
+      <TableCaption></TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">N° OS</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Data do Serviço</TableHead>
+          <TableHead>Área não construída</TableHead>
+
+          <TableHead className="text-right">Área tratada</TableHead>
+          <TableHead className="text-right">PDF</TableHead>
+
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell className="font-medium">000001</TableCell>
+          <TableCell>Paid</TableCell>
+          <TableCell>01/08/2025</TableCell>
+          <TableCell>10m²</TableCell>
+          <TableCell className="text-right">10m²</TableCell>
+          <TableCell className="text-right">Download</TableCell>
+
+        </TableRow>
+      </TableBody>
+    </Table>
+    </SidebarInset>
     </SidebarProvider>
+
+    
   )
 }
