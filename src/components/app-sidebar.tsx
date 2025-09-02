@@ -11,7 +11,9 @@ import {
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
+  ClipboardPlus,
+  UserRound,
+  IdCardLanyard
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -35,123 +37,58 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "LMC",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      plan: "Dedetizadora",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Ordens de Serviço",
       url: "#",
-      icon: SquareTerminal,
+      icon: ClipboardPlus,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Gerar nova OS",
           url: "#",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
+          title: "Listar OS's",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Clientes",
       url: "#",
-      icon: Bot,
+      icon: UserRound,
       items: [
         {
-          title: "Genesis",
+          title: "Cadastrar novo cliente",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Listar clientes",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Funcionários",
       url: "#",
-      icon: BookOpen,
+      icon: IdCardLanyard,
       items: [
         {
-          title: "Introduction",
+          title: "Cadastrar funcionário",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Listar funcionários",
           url: "#",
         },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
+        
       ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
     },
   ],
 }
@@ -164,7 +101,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+  
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
