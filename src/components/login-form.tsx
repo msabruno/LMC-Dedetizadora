@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -73,9 +74,11 @@ export function LoginForm({
                   </div>
                   <Input id="password" type="password" required />
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
-                </Button>
+                <Link rel="stylesheet" href="/dashboard">
+                  <Button type="submit" className="w-full">
+                    Login
+                  </Button>
+                </Link>
               </div>
               <div className="text-center text-sm">
                 Não possui uma conta?{" "}
