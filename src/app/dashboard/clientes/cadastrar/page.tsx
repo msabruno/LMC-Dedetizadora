@@ -22,8 +22,10 @@ export default function CadastrarClientePage() {
   const [bairro, setBairro] = useState('')
   const [cidade, setCidade] = useState('')
   const [estado, setEstado] = useState('')
+  const [identificacao, setIdentificacao] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,7 +45,8 @@ export default function CadastrarClientePage() {
           cli_bairro: bairro,
           cli_cidade: cidade,
           cli_estado: estado,
-          cli_telefone: telefone
+          cli_telefone: telefone,
+          cli_identificacao: identificacao
         })
         .select()
     setLoading(false)
@@ -92,8 +95,8 @@ export default function CadastrarClientePage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="cpf">CPF/CNPJ</Label>
-                    <Input id="cpf" placeholder="Ex: 000.000.000-00 / 00.000.000/0000-00" />
+                    <Label htmlFor="identificacao">CPF/CNPJ</Label>
+                    <Input id="identificacao" value={identificacao} onChange={(e) => setIdentificacao(e.target.value)} placeholder="Ex: 000.000.000-00 / 00.000.000/0000-00" />
                   </div>
                 </div>
               </div>
