@@ -13,7 +13,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-
+import { Toaster } from "sonner";
 export default function DashboardLayout({
   children,
 }: {
@@ -44,8 +44,9 @@ export default function DashboardLayout({
 
           {/* ADICIONE O {children} AQUI */}
           <div className="p-6">{children}</div>
-
+        <Toaster />
         </SidebarInset>
+        
     </SidebarProvider>
   );
 }
