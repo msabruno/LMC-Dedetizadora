@@ -36,6 +36,11 @@ export default function CadastrarClientePage() {
                     <Label htmlFor="phone">Telefone</Label>
                     <Input id="phone" type="tel" placeholder="Ex: (85) 99999-9999" />
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="cpf">CPF/CNPJ</Label>
+                    <Input id="cpf" placeholder="Ex: 000.000.000-00 / 00.000.000/0000-00" />
+                  </div>
                 </div>
               </div>
 

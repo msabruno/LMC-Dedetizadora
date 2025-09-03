@@ -51,7 +51,7 @@ const data = {
       items: [
         {
           title: "Gerar nova OS",
-          url: "#",
+          url: "/dashboard/os/cadastrar",
         },
         {
           title: "Listar OS's",
