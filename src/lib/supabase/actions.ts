@@ -22,27 +22,31 @@ export async function getClientesParaCombobox() {
 }
 
 
-export async function getOrdensDeServico() {
+
+export async function getOrdensDeServico(pagina = 1, porPagina = 10) {
   const supabase = createClient();
   
-  const { data, error } = await supabase
+  const from = (pagina - 1) * porPagina;
+  const to = from + porPagina - 1;
+
+  const { data, error, count } = await supabase
     .from('ordem_servico')
     .select(`
       os_id,
       os_status,
       os_data_servico,
-      os_area_nao_construida,
       os_area_tratada,
       cliente ( cli_nome ) 
-    `)
-    .order('os_id', { ascending: true }); 
+    `, { count: 'exact' }) 
+    .order('os_id', { ascending: false }) 
+    .range(from, to); 
 
   if (error) {
     console.error("Erro ao buscar Ordens de Serviço:", error);
-    return [];
+    return { ordens: [], totalOrdens: 0 };
   }
 
-  return data;
+  return { ordens: data, totalOrdens: count ?? 0 };
 }
 
 
