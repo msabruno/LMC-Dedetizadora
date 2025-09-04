@@ -51,7 +51,7 @@ const data = {
       items: [
         {
           title: "Gerar nova OS",
-          url: "#",
+          url: "/dashboard/os/cadastrar",
         },
         {
           title: "Listar OS's",
@@ -70,7 +70,7 @@ const data = {
         },
         {
           title: "Listar clientes",
-          url: "#",
+          url: "/dashboard/clientes",
         },
       ],
     },
@@ -81,11 +81,11 @@ const data = {
       items: [
         {
           title: "Cadastrar funcionário",
-          url: "#",
+          url: "/dashboard/funcionarios/cadastrar",
         },
         {
           title: "Listar funcionários",
-          url: "#",
+          url: "/dashboard/funcionarios/",
         },
         
       ],
