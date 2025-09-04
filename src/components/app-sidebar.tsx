@@ -81,11 +81,11 @@ const data = {
       items: [
         {
           title: "Cadastrar funcionário",
-          url: "#",
+          url: "/dashboard/funcionarios/cadastrar",
         },
         {
           title: "Listar funcionários",
-          url: "#",
+          url: "/dashboard/funcionarios/",
         },
         
       ],

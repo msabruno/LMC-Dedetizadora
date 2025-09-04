@@ -69,3 +69,23 @@ export async function getTodosClientes(pagina = 1, porPagina = 10) {
 
   return { clientes: data, totalClientes: count ?? 0 };
 }
+
+export async function getTodosFuncionarios(pagina = 1, porPagina = 10) {
+  const supabase = createClient();
+  
+  const from = (pagina - 1) * porPagina;
+  const to = from + porPagina - 1;
+
+  const { data, error, count } = await supabase
+    .from('funcionario')
+    .select('*', { count: 'exact' })
+    .order('fun_id', { ascending: true }) 
+    .range(from, to);
+
+  if (error) {
+    console.error("Erro ao buscar a lista de funcionários:", error);
+    return { funcionarios: [], totalFuncionarios: 0 };
+  }
+
+  return { funcionarios: data, totalFuncionarios: count ?? 0 };
+}
