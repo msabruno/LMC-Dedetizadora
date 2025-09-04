@@ -74,6 +74,9 @@ export default function FormularioCadastroOS({ clientes }: FormularioCadastroOSP
     setIsSubmitting(false);
   };
 
+  const isFormInvalid = !clienteId || !dataServico || !periodicidade;
+
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="w-full max-w-4xl space-y-6">
@@ -166,10 +169,10 @@ export default function FormularioCadastroOS({ clientes }: FormularioCadastroOSP
               </div>
             </CardContent>
             <CardFooter className="flex justify-end space-x-4 border-t px-6 py-4">
-              <Button variant="outline" type="button" onClick={() => router.back()}>Cancelar</Button>
-              <Button type="submit" disabled={isSubmitting}>
+                <Button variant="outline" type="button" onClick={() => router.back()}>Cancelar</Button>
+                <Button type="submit" disabled={isFormInvalid || isSubmitting}>
                 {isSubmitting ? "Salvando..." : "Salvar Ordem de Serviço"}
-              </Button>
+                </Button>
             </CardFooter>
           </form>
         </Card>

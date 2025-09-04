@@ -19,11 +19,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-// 1. IMPORTS RESTAURADOS
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MoreHorizontal } from "lucide-react";
-
-// A página agora recebe 'searchParams' para saber a página atual
 export default async function ListarClientesPage({
   searchParams,
 }: {
@@ -31,8 +28,6 @@ export default async function ListarClientesPage({
 }) {
   const paginaAtual = Number(searchParams?.page) || 1;
   const clientesPorPagina = 10;
-
-  // Buscamos os dados passando a página atual
   const { clientes, totalClientes } = await getTodosClientes(paginaAtual, clientesPorPagina);
   
   const totalPaginas = Math.ceil(totalClientes / clientesPorPagina);
@@ -55,7 +50,6 @@ export default async function ListarClientesPage({
                 <TableHead>Nome</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Telefone</TableHead>
-                {/* 2. CABEÇALHO DA COLUNA RESTAURADO */}
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -64,12 +58,11 @@ export default async function ListarClientesPage({
                 clientes.map((cliente) => (
                   <TableRow key={cliente.cli_id}>
                     <TableCell className="font-medium">
-                      {String(cliente.cli_id).padStart(4, '0')}
+                      {String(cliente.cli_id).padStart(5, '0')}
                     </TableCell>
                     <TableCell>{cliente.cli_nome}</TableCell>
                     <TableCell>{cliente.cli_email || 'N/A'}</TableCell>
                     <TableCell>{cliente.cli_telefone || 'N/A'}</TableCell>
-                    {/* 3. CÉLULA COM OS BOTÕES RESTAURADA */}
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Button variant="outline" size="icon" className="h-8 w-8">
@@ -90,7 +83,6 @@ export default async function ListarClientesPage({
                 ))
               ) : (
                 <TableRow>
-                  {/* 4. COLSPAN CORRIGIDO PARA 5 COLUNAS */}
                   <TableCell colSpan={5} className="text-center h-24">
                     Nenhum cliente encontrado.
                   </TableCell>
@@ -101,7 +93,6 @@ export default async function ListarClientesPage({
         </CardContent>
       </Card>
       
-      {/* Componente de Paginação */}
       <Pagination>
         <PaginationContent>
           <PaginationItem>

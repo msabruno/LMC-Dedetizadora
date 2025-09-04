@@ -69,9 +69,9 @@ export default async function ListarOSPage({
                   return (
                     <TableRow key={ordem.os_id}>
                       <TableCell className="font-medium">
-                        {String(ordem.os_id).padStart(6, '0')}
+                        {String(ordem.os_id).padStart(5, '0')}
                       </TableCell>
-                      <TableCell>{ordem.cliente[0]?.cli_nome || 'Cliente não encontrado'}</TableCell>                      
+                      <TableCell>{ordem.cliente?.cli_nome || 'Cliente não encontrado'}</TableCell>                      
                       <TableCell>
                         <Badge variant={statusInfo.variant}>{statusInfo.text}</Badge>
                       </TableCell>

@@ -21,8 +21,6 @@ export async function getClientesParaCombobox() {
   }));
 }
 
-
-
 export async function getOrdensDeServico(pagina = 1, porPagina = 10) {
   const supabase = createClient();
   

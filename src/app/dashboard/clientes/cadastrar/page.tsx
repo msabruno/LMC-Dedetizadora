@@ -19,7 +19,7 @@ export default function CadastrarClientePage() {
   const nomeInputRef = useRef<HTMLInputElement>(null);
   const numeroInputRef = useRef<HTMLInputElement>(null);
   const [cepLoading, setCepLoading] = useState(false); 
-  
+
   const estadosBrasileiros = [
     { sigla: 'AC', nome: 'Acre' },
     { sigla: 'AL', nome: 'Alagoas' },
@@ -199,7 +199,19 @@ const handleCepBlur = async () => {
     { mask: '00.000.000/0000-00' }
   ];
 
-  const isFormInvalid = !nome || !telefone || !identificacao || !!identificacaoError;
+
+  const isFormInvalid =
+    !nome ||
+    !logradouro ||
+    !numero ||
+    !bairro ||
+    !cidade ||
+    !estado ||
+
+    telefone.replace(/\D/g, '').length < 11 ||
+    identificacao.replace(/\D/g, '').length < 11 || 
+    cep.replace(/\D/g, '').length < 8 || 
+    !!identificacaoError;
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
@@ -323,10 +335,9 @@ const handleCepBlur = async () => {
               </div>
             </CardContent>
             <CardFooter className="flex justify-end space-x-4 border-t px-6 py-4">
-              <Button variant="outline" type="button" onClick={() => router.back()}>Cancelar</Button>
-              <Button type="submit" disabled={loading || cepLoading}>
-                {loading || cepLoading ? 'Aguarde...' : 'Cadastrar Cliente'}
-              </Button>
+            <Button type="submit" disabled={isFormInvalid || loading || cepLoading}>
+              {loading || cepLoading ? 'Aguarde...' : 'Cadastrar Cliente'}
+            </Button>
             </CardFooter>
           </form>
         </Card>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -10,9 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner"; 
 import { useRouter } from 'next/navigation';
+import { IMaskInput } from 'react-imask';
+import { cn } from '@/lib/utils';
 
 export default function CadastrarFuncionarioPage() {
   const router = useRouter();
+  const nomeInputRef = useRef<HTMLInputElement>(null);
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -25,6 +28,8 @@ export default function CadastrarFuncionarioPage() {
     e.preventDefault();
     setLoading(true);
 
+    const telefoneLimpo = telefone.replace(/\D/g, '');
+
     const supabase = createClient();
 
     const { data, error } = await supabase
@@ -32,7 +37,7 @@ export default function CadastrarFuncionarioPage() {
       .insert({
         fun_nome: nome,
         fun_email: email,
-        fun_telefone: telefone,
+        fun_telefone: telefoneLimpo,
         fun_cargo: cargo,
       })
       .select();
@@ -46,10 +51,17 @@ export default function CadastrarFuncionarioPage() {
       });
     } else {
       toast.success('Funcionário cadastrado com sucesso!');
-      console.log('Funcionário cadastrado:', data);
-      router.push('/dashboard/funcionarios'); 
+
+      setNome('');
+      setEmail('');
+      setTelefone('');
+      setCargo('');
+
+      nomeInputRef.current?.focus();
     }
   }
+
+    const isFormInvalid = !nome || telefone.replace(/\D/g, '').length < 11 || !cargo;
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
@@ -70,7 +82,7 @@ export default function CadastrarFuncionarioPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="name">Nome Completo</Label>
-                    <Input id="name" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: Ana de Souza" required />
+                    <Input ref={nomeInputRef} id="name" value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Ex: Ana de Souza" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
@@ -78,11 +90,23 @@ export default function CadastrarFuncionarioPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="phone">Telefone</Label>
-                    <Input id="phone" value={telefone} onChange={(e) => setTelefone(e.target.value)} type="tel" placeholder="Ex: (85) 98888-8888" />
+                    <IMaskInput
+                      mask="(00) 00000-0000"
+                      id="phone"
+                      value={telefone}
+                      onAccept={(value: any) => setTelefone(value)}
+                      placeholder="Ex: (85) 98888-8888"
+                      className={cn(
+                        "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
+                        "placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                        "disabled:cursor-not-allowed disabled:opacity-50"
+                      )}
+                      required
+                    />
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label htmlFor="cargo">Cargo</Label>
-                    <Select onValueChange={setCargo} value={cargo}>
+                    <Select onValueChange={setCargo} value={cargo} required>
                       <SelectTrigger id="cargo">
                         <SelectValue placeholder="Selecione o cargo do funcionário" />
                       </SelectTrigger>
@@ -100,7 +124,7 @@ export default function CadastrarFuncionarioPage() {
             </CardContent>
             <CardFooter className="flex justify-end space-x-4 border-t px-6 py-4">
               <Button variant="outline" type="button" onClick={() => router.back()}>Cancelar</Button>
-              <Button type="submit" disabled={loading}>
+              <Button type="submit" disabled={isFormInvalid || loading}>
                 {loading ? 'Cadastrando...' : 'Cadastrar Funcionário'}
               </Button>
             </CardFooter>
