@@ -46,6 +46,7 @@ export default function CadastrarClientePage() {
           cli_cidade: cidade,
           cli_estado: estado,
           cli_telefone: telefone,
+          cli_email: email,
           cli_identificacao: identificacao
         })
         .select()

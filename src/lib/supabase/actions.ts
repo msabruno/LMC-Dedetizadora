@@ -44,3 +44,18 @@ export async function getOrdensDeServico() {
 
   return data;
 }
+
+export async function getTodosClientes() {
+  const supabase = createClient();
+  
+  const { data, error } = await supabase
+    .from('cliente')
+    .select('*') 
+    .order('cli_nome', { ascending: true }); 
+  if (error) {
+    console.error("Erro ao buscar a lista de clientes:", error);
+    return [];
+  }
+
+  return data;
+}

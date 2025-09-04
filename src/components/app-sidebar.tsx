@@ -70,7 +70,7 @@ const data = {
         },
         {
           title: "Listar clientes",
-          url: "#",
+          url: "/dashboard/clientes",
         },
       ],
     },

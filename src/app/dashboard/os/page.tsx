@@ -1,5 +1,3 @@
-// app/dashboard/os/page.tsx
-
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -13,10 +11,10 @@ import {
 } from "@/components/ui/table";
 import { getOrdensDeServico } from "@/lib/supabase/actions";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card"; // AQUI ESTÁ A CORREÇÃO
+import { Card, CardContent } from "@/components/ui/card"; 
 import { Button } from "@/components/ui/button";
 
-// Helper para traduzir o status numérico para texto e cor
+
 const statusMap = {
   1: { text: "Aberto", variant: "secondary" as const },
   2: { text: "Em Andamento", variant: "default" as const },
@@ -24,7 +22,6 @@ const statusMap = {
   4: { text: "Cancelado", variant: "destructive" as const },
 };
 
-// A página agora é 'async' para poder buscar dados
 export default async function ListarOSPage() {
   const ordens = await getOrdensDeServico();
 
