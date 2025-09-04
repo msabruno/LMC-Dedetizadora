@@ -35,7 +35,7 @@ export async function getOrdensDeServico() {
       os_area_tratada,
       cliente ( cli_nome ) 
     `)
-    .order('os_data_servico', { ascending: false }); 
+    .order('os_id', { ascending: true }); 
 
   if (error) {
     console.error("Erro ao buscar Ordens de Serviço:", error);
@@ -45,17 +45,23 @@ export async function getOrdensDeServico() {
   return data;
 }
 
-export async function getTodosClientes() {
+
+export async function getTodosClientes(pagina = 1, porPagina = 10) {
   const supabase = createClient();
   
-  const { data, error } = await supabase
+  const from = (pagina - 1) * porPagina;
+  const to = from + porPagina - 1;
+
+  const { data, error, count } = await supabase
     .from('cliente')
-    .select('*') 
-    .order('cli_nome', { ascending: true }); 
+    .select('*', { count: 'exact' }) 
+    .order('cli_id', { ascending: true })
+    .range(from, to); 
+
   if (error) {
     console.error("Erro ao buscar a lista de clientes:", error);
-    return [];
+    return { clientes: [], totalClientes: 0 };
   }
 
-  return data;
+  return { clientes: data, totalClientes: count ?? 0 };
 }
