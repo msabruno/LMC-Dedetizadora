@@ -20,7 +20,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MoreHorizontal } from "lucide-react";
+import { Pencil, Trash, MoreHorizontal } from "lucide-react";
 export default async function ListarClientesPage({
   searchParams,
 }: {
@@ -66,16 +66,12 @@ export default async function ListarClientesPage({
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Button variant="outline" size="icon" className="h-8 w-8">
-                          <Phone className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" />
                           <span className="sr-only">Ligar</span>
                         </Button>
                         <Button variant="outline" size="icon" className="h-8 w-8">
-                          <Mail className="h-4 w-4" />
+                          <Trash className="h-4 w-4"/>
                           <span className="sr-only">Enviar Email</span>
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Mais opções</span>
                         </Button>
                       </div>
                     </TableCell>

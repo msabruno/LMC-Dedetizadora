@@ -1,134 +1,177 @@
 "use client";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { IMaskInput } from "react-imask";
+import { postUsuario } from "@/lib/supabase/actions";
 
-export function RegisterForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function RegisterForm({ className, ...props }: React.ComponentProps<"div">) {
+  // States para cada campo
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [cargo, setCargo] = useState("");
+  const [senha, setSenha] = useState("");
+  const [senhaConfirm, setSenhaConfirm] = useState("");
+
+  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+  const [carregando, setCarregando] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMensagem(null);
+    setErro(null);
+    setCarregando(true);
+
+    // Cria FormData e adiciona todos os campos
+    const formData = new FormData();
+    formData.append("nome", nome);
+    formData.append("email", email);
+    formData.append("telefone", telefone);
+    formData.append("cargo", cargo);
+    formData.append("password", senha);
+    formData.append("password-confirm", senhaConfirm);
+
+    const resultado = await postUsuario(formData);
+
+    if (resultado.success) {
+      setMensagem("Usuário registrado com sucesso!");
+      // Reseta os campos
+      setNome("");
+      setEmail("");
+      setTelefone("");
+      setCargo("");
+      setSenha("");
+      setSenhaConfirm("");
+    } else {
+      setErro(resultado.error || "Erro ao registrar usuário.");
+    }
+
+    setCarregando(false);
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Criar Conta</CardTitle>
           <CardDescription>
-            Registrar com sua conta Apple ou Google
+            Preencha os campos para criar uma conta
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit} className="grid gap-6">
+            
+            {/* Campos do formulário */}
             <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Registro com Apple
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Registro com Google
-                </Button>
+              <div className="grid gap-3">
+                <Label htmlFor="name">Nome</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Digite seu nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  required
+                />
               </div>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Ou continue com
-                </span>
+
+              <div className="grid gap-3">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="m@exemplo.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
               </div>
-              <div className="grid gap-6">
-                <div className="grid gap-3">
-                  <Label>Nome</Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Digite seu nome"
-                    required
-                  />
-                </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@exemplo.com"
-                    required
-                  />
-                </div>
-                <div className="grid gap-3">
-                  <Label>Telefone</Label>
-                  <IMaskInput 
-                    mask="(00) 00000-0000"
-                    placeholder="(99) 99999-9999"
-                    type="text"
-                    className={cn(
-                            "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-                            "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-                            "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-                            className
-                          )}
-                    required
-                    
-                  />
-                </div>
-                <div className="grid gap-3">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Senha</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    > 
-                    </a>
-                  </div>
-                  <Input id="password" type="password" required />
-                  <div className="grid gap-3"></div>
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Confirme sua Senha</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >  
-                    </a>
-                  </div>
-                  <Input id="password-confirm" type="password" required />
-                  
-                </div>
-                
-                <Button type="submit" className="w-full">
-                  Cadastrar-se
-                </Button>
+
+              <div className="grid gap-3">
+                <Label htmlFor="telefone">Telefone</Label>
+                <IMaskInput
+                  name="telefone"
+                  mask="(00) 00000-0000"
+                  placeholder="(99) 99999-9999"
+                  value={telefone}
+                  onAccept={(value: string) => setTelefone(value)}
+                  className={cn(
+                    "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                    "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+                    "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
+                  )}
+                  required
+                />
               </div>
-              <div className="text-center text-sm">
-                Já possui uma conta?{" "}
-                <a href="/" className="underline underline-offset-4">
-                  Entrar
-                </a>
+
+              <div className="grid gap-3">
+                <Label htmlFor="cargo">Cargo</Label>
+                <Input
+                  id="cargo"
+                  name="cargo"
+                  type="text"
+                  placeholder="Digite seu cargo"
+                  value={cargo}
+                  onChange={(e) => setCargo(e.target.value)}
+                />
               </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  value={senha}
+                  onChange={(e) => setSenha(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="password-confirm">Confirme sua Senha</Label>
+                <Input
+                  id="password-confirm"
+                  name="password-confirm"
+                  type="password"
+                  value={senhaConfirm}
+                  onChange={(e) => setSenhaConfirm(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Botão submit */}
+              <Button type="submit" className="w-full" disabled={carregando}>
+                {carregando ? "Cadastrando..." : "Cadastrar-se"}
+              </Button>
+
+              {/* Mensagens */}
+              {mensagem && <p className="text-green-600 text-center">{mensagem}</p>}
+              {erro && <p className="text-red-600 text-center">{erro}</p>}
+            </div>
+
+            {/* Link de login */}
+            <div className="text-center text-sm mt-4">
+              Já possui uma conta?{" "}
+              <a href="/" className="underline underline-offset-4">Entrar</a>
             </div>
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        
-      </div>
     </div>
-  )
+  );
 }
