@@ -102,21 +102,23 @@ export async function postUsuario(formData: FormData) {
   const senha = (formData.get("password") as string)?.trim();
   const senhaConfirm = (formData.get("password-confirm") as string)?.trim();
 
-
   if (senha !== senhaConfirm) {
     return { success: false, error: "As senhas não conferem" };
   }
 
   if (senha.length < 6 || senha.length > 128) {
-    return { success: false, error: "A senha deve ter entre 6 e 128 caracteres" };
+    return { success: false, error: "A senha deve ter no mínimo 6 caracteres" };
   }
 
   const supabase = await createClient();
 
-  // 1️⃣ Cria usuário no Auth
+
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password: senha,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`, // <-- URL de callback
+    },
   });
 
   if (authError) {
@@ -127,7 +129,7 @@ export async function postUsuario(formData: FormData) {
     return { success: false, error: "Erro desconhecido ao criar usuário" };
   }
 
-  // 2️⃣ Insere na tabela `funcionario`
+
   const { data, error } = await supabase
     .from("funcionario")
     .insert({
@@ -140,10 +142,35 @@ export async function postUsuario(formData: FormData) {
     .single();
 
   if (error) {
-    // Opcional: remove usuário do Auth se falhar a inserção
+    // remove usuário do Auth se falhar a inserção
     await supabase.auth.admin.deleteUser(authData.user.id);
     return { success: false, error: error.message };
   }
 
   return { success: true, funcionario: data };
+}
+
+
+
+// services/auth.ts
+export async function signIn(formData: FormData) {
+  const supabase = await createClient();
+
+  const senha = (formData.get("password") as string)?.trim();
+  const email = (formData.get("email") as string)?.trim();
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password: senha,
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return {
+    success: true,
+    user: data.user,
+    session: data.session,
+  };
 }

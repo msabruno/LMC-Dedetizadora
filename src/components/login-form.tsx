@@ -14,21 +14,26 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { signIn } from '@/lib/supabase/actions';
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault(); 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-    const loginValido = true;
+    const formData = new FormData(event.currentTarget);
+    const resultado = await signIn(formData);
 
-    if (loginValido) {
-      console.log("Login bem-sucedido! Redirecionando para /dashboard...");
-      router.push('/dashboard');
+    if (resultado.success) {
+      console.log("Login bem-sucedido!", resultado.user);
+      router.push("/dashboard");
+    } else {
+      console.log("Erro no login:", resultado.error);
     }
   };
 
@@ -38,34 +43,21 @@ export function LoginForm({
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Bem vindo</CardTitle>
           <CardDescription>
-            Faça Login com sua conta Apple ou Google
+            Preencha os campos abaixo para acessar seu ambiente
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full" type="button">
-                  <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..." fill="currentColor" /></svg>
-                  Login com Apple
-                </Button>
-                <Button variant="outline" className="w-full" type="button">
-                  <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="..." fill="currentColor" /></svg>
-                  Login com Google
-                </Button>
-              </div>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Ou continue com
-                </span>
-              </div>
               <div className="grid gap-6">
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name='email'
                     type="email"
-                    placeholder="m@exemplo.com"
+                    placeholder="usuario@exemplo.com"
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -76,13 +68,13 @@ export function LoginForm({
                       Esqueceu sua senha?
                     </a>
                   </div>
-                  <Input id="password" type="password" required />
+                  <Input id="password" type="password" name='password'required placeholder='Digite sua senha' onChange={(e) => setPassword(e.target.value)}/>
                 </div>
-                <Link rel="stylesheet" href="/dashboard">
-                  <Button type="submit" className="w-full">
-                    Login
-                  </Button>
-                </Link>
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                
               </div>
               <div className="text-center text-sm">
                 Não possui uma conta?{" "}
