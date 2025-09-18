@@ -137,6 +137,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
                   name="password"
                   type="password"
                   value={senha}
+                  placeholder="Crie sua senha"
                   onChange={(e) => setSenha(e.target.value)}
                   required
                 />
@@ -148,6 +149,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
                   id="password-confirm"
                   name="password-confirm"
                   type="password"
+                  placeholder="Confirme sua senha"
                   value={senhaConfirm}
                   onChange={(e) => setSenhaConfirm(e.target.value)}
                   required
@@ -155,7 +157,7 @@ export function RegisterForm({ className, ...props }: React.ComponentProps<"div"
               </div>
 
               {/* Botão submit */}
-              <Button type="submit" className="w-full" disabled={carregando}>
+              <Button type="submit" className="w-full cursor-pointer" disabled={carregando}>
                 {carregando ? "Cadastrando..." : "Cadastrar-se"}
               </Button>
 

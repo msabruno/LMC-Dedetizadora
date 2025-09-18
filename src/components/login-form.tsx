@@ -70,7 +70,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   </div>
                   <Input id="password" type="password" name='password'required placeholder='Digite sua senha' onChange={(e) => setPassword(e.target.value)}/>
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full cursor-pointer">
                   Login
                 </Button>
                 {error && <p style={{ color: "red" }}>{error}</p>}

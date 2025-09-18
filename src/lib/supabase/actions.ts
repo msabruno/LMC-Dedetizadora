@@ -174,3 +174,12 @@ export async function signIn(formData: FormData) {
     session: data.session,
   };
 }
+
+export async function getCurrentUser() {
+  const supabase = createClient();
+  const { data, error } = await (await supabase).auth.getUser();
+
+  if (error || !data.user) return null;
+
+  return data.user;
+}
