@@ -1,5 +1,6 @@
 "use server";
 
+import { create } from "domain";
 import { createClient } from "./server";
 
 // Buscar clientes para combobox
@@ -182,4 +183,20 @@ export async function getCurrentUser() {
   if (error || !data.user) return null;
 
   return data.user;
+}
+
+export async function deletarOS(osId: number) {
+  const supabase = createClient();
+  const { data, error } = await (await supabase)    
+    .from("ordem_servico")
+    .delete()
+    .eq("os_id", osId)
+    .select()
+    .single();
+  if (error) {
+    console.error("Erro ao deletar registro:", error);
+    return null;
+  }
+
+  return data;
 }

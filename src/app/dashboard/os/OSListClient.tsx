@@ -4,8 +4,8 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
-import { Pencil,FileText } from "lucide-react";
-
+import { Pencil, FileText, Trash } from "lucide-react";
+import { deletarOS } from "@/lib/supabase/actions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -68,6 +68,9 @@ export default function OSListClient({ ordens, paginaAtual, totalPaginas }: OSLi
                       <Button variant="outline" className="cursor-pointer" size="sm"><FileText/> Gerar PDF</Button>
                       <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => router.push(`/dashboard/os/editar/${ordem.os_id}`)}>
                         <Pencil /> Editar OS
+                      </Button>
+                      <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => deletarOS(ordem.os_id)}>
+                        <Trash /> Deletar OS
                       </Button>
                     </TableCell>
                   </TableRow>

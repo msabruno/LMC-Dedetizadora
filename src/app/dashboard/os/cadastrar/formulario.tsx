@@ -161,7 +161,7 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                     <Label>Cliente</Label>
                     <Popover open={clienteOpen} onOpenChange={setClienteOpen}>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" role="combobox" className="w-full justify-between font-normal">
+                        <Button  variant="outline" role="combobox" className="w-full justify-between font-normal cursor-pointer">
                           {clienteId ? clientes.find(c => c.value === clienteId)?.label ?? "—" : "Selecione um cliente..."}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -175,8 +175,9 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                             <CommandGroup>
                               {clientes.map(cliente => (
                                 <CommandItem
+                                  className="cursor-pointer"
                                   key={cliente.value}
-                                  value={cliente.value} // mantenha ID como value (string)
+                                  value={cliente.value} 
                                   onSelect={() => {
                                     setClienteId(cliente.value);
                                     setClienteOpen(false);
@@ -203,12 +204,12 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                   <div className="space-y-2">
                     <Label>Status</Label>
                     <Select value={status} onValueChange={setStatus}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">Aberto</SelectItem>
-                        <SelectItem value="2">Em Andamento</SelectItem>
-                        <SelectItem value="3">Concluído</SelectItem>
-                        <SelectItem value="4">Cancelado</SelectItem>
+                      <SelectTrigger  className="cursor-pointer"><SelectValue /></SelectTrigger>
+                      <SelectContent >
+                        <SelectItem className="cursor-pointer" value="1">Aberto</SelectItem>
+                        <SelectItem className="cursor-pointer" value="2">Em Andamento</SelectItem>
+                        <SelectItem className="cursor-pointer" value="3">Concluído</SelectItem>
+                        <SelectItem className="cursor-pointer" value="4">Cancelado</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -229,13 +230,13 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                   <div className="space-y-2 md:col-span-2">
                     <Label>Periodicidade</Label>
                     <Select value={periodicidade} onValueChange={setPeriodicidade}>
-                      <SelectTrigger><SelectValue placeholder="Selecione a periodicidade" /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="unica">Aplicação Única</SelectItem>
-                        <SelectItem value="mensal">Mensal</SelectItem>
-                        <SelectItem value="bimestral">Bimestral</SelectItem>
-                        <SelectItem value="trimestral">Trimestral</SelectItem>
-                        <SelectItem value="semestral">Semestral</SelectItem>
+                      <SelectTrigger className="cursor-pointer"><SelectValue placeholder="Selecione a periodicidade" /></SelectTrigger>
+                      <SelectContent >
+                        <SelectItem className="cursor-pointer" value="unica">Aplicação Única</SelectItem>
+                        <SelectItem className="cursor-pointer" value="mensal">Mensal</SelectItem>
+                        <SelectItem className="cursor-pointer" value="bimestral">Bimestral</SelectItem>
+                        <SelectItem className="cursor-pointer" value="trimestral">Trimestral</SelectItem>
+                        <SelectItem className="cursor-pointer" value="semestral">Semestral</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -245,8 +246,8 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
             </CardContent>
 
             <CardFooter className="flex justify-end space-x-4 border-t px-6 py-4">
-              <Button variant="outline" type="button" onClick={() => router.back()}>Cancelar</Button>
-              <Button type="submit" disabled={isFormInvalid || isSubmitting}>
+              <Button variant="outline" type="button" className="cursor-pointer" onClick={() => router.back()}>Cancelar</Button>
+              <Button type="submit" className="cursor-pointer" disabled={isFormInvalid || isSubmitting}>
                 {isSubmitting ? "Salvando..." : "Salvar Ordem de Serviço"}
               </Button>
             </CardFooter>
