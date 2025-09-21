@@ -1,5 +1,5 @@
 import { getClientesParaCombobox } from "@/lib/supabase/actions";
-import FormularioCadastroOS from "./formulario"; 
+import FormularioCadastroOS from "./cadastrarOs"; 
 export default async function CadastrarOSPage() {
   
   const clientes = await getClientesParaCombobox();

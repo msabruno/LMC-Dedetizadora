@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import FormularioOS from "../../cadastrar/formulario";
+import FormularioOS from "../../cadastrar/cadastrarOs";
+
 
 
 export default function EditarOSPage({ params }: { params: { id: string } }) {

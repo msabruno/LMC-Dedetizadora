@@ -39,6 +39,7 @@ import {
 
 export function NavUser() {
   const router = useRouter()
+  const { isMobile } = useSidebar()
   const [user, setUser] = useState<{ name: string; email: string; avatar: string } | null>(null)
   const handleLogout = async () => {
     const supabase = createClient();
@@ -84,7 +85,7 @@ export function NavUser() {
 
   if(!user) return <p>Carregando...</p>
 
-  const { isMobile } = useSidebar()
+ 
   return (
     <SidebarMenu>
       <SidebarMenuItem>

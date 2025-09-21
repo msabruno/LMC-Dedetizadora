@@ -195,8 +195,44 @@ export async function deletarOS(osId: number) {
     .single();
   if (error) {
     console.error("Erro ao deletar registro:", error);
-    return null;
+    return false;
+  } else {
+    return true;
+  }
+}
+
+export async function deletarFuncionario(fun_id: number) {
+  const supabase = createClient();
+  const { data, error } = await (await supabase)    
+    .from("funcionario")
+    .delete()
+    .eq("fun_id", fun_id)
+    .select()
+    .single();
+  if (error) {
+    console.error("Erro ao deletar registro:", error);
+    return false;
+  } else {
+    return true;
   }
 
-  return data;
+  
+}
+
+export async function deletarCliente(cli_id: number) {
+  const supabase = createClient();
+  const { data, error } = await (await supabase)    
+    .from("cliente")
+    .delete()
+    .eq("cli_id", cli_id)
+    .select()
+    .single();
+  if (error) {
+    console.error("Erro ao deletar registro:", error);
+    return false;
+  } else {
+    return true;
+  }
+
+  
 }

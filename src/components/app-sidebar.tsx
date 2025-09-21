@@ -56,6 +56,7 @@ const data = {
         {
           title: "Listar OS's",
           url: "/dashboard/os/",
+        
         },
       ],
     },

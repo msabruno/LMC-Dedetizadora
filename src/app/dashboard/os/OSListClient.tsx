@@ -11,7 +11,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-
+import { toast } from "sonner";
+import { useState } from "react";
 const statusMap: Record<number, { text: string; variant: "secondary" | "default" | "outline" | "destructive" }> = {
   1: { text: "Aberto", variant: "secondary" },
   2: { text: "Em Andamento", variant: "default" },
@@ -27,9 +28,20 @@ interface OSListClientProps {
   totalPaginas: number;
 }
 
+
 export default function OSListClient({ ordens, paginaAtual, totalPaginas }: OSListClientProps) {
   const router = useRouter();
-  
+
+  const handleDelete = async (id: number) => {
+    const sucesso = await deletarOS(id);
+    
+    if (sucesso) {
+      toast.success("Ordem de Serviço excluída com sucesso!");
+      router.refresh();
+    } else {
+      toast.error("Erro ao excluir Ordem de Serviço.");
+    }
+  };
   return (
     <div className="space-y-6">
       <header>
@@ -69,7 +81,7 @@ export default function OSListClient({ ordens, paginaAtual, totalPaginas }: OSLi
                       <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => router.push(`/dashboard/os/editar/${ordem.os_id}`)}>
                         <Pencil /> Editar OS
                       </Button>
-                      <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => deletarOS(ordem.os_id)}>
+                      <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => handleDelete(ordem.os_id)}>
                         <Trash /> Deletar OS
                       </Button>
                     </TableCell>
@@ -107,3 +119,7 @@ export default function OSListClient({ ordens, paginaAtual, totalPaginas }: OSLi
     </div>
   );
 }
+function setOrdens(arg0: (prev: any) => any) {
+  throw new Error("Function not implemented.");
+}
+

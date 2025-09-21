@@ -11,6 +11,6 @@ import {
 export default function Page() {
   return (
 
-    <h1>a</h1>
+    <h1></h1>
    );
 }

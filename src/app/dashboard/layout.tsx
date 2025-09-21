@@ -35,7 +35,9 @@ export default function DashboardLayout({
                   <BreadcrumbItem className="hidden md:block"></BreadcrumbItem>
                   <BreadcrumbSeparator className="hidden md:block" />
                   <BreadcrumbItem>
-                    <BreadcrumbPage>Lista Ordens de Serviço</BreadcrumbPage>
+                    <BreadcrumbPage>
+                      Sistema Administrativo - LMC Dedetizadora
+                    </BreadcrumbPage>
                   </BreadcrumbItem>
                 </BreadcrumbList>
               </Breadcrumb>
