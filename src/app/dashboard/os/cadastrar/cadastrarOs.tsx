@@ -226,7 +226,7 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                         </Select>
                       </div>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-x-4 gap-y-2">
+                    <div className="grid md:grid-cols-2  gap-y-2">
                       <div className="space-y-1">
                         <Label>Hora início</Label>
                         <Input
