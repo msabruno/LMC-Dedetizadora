@@ -133,8 +133,6 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
     if (activeTab === "area") setActiveTab("confirmar");
   };
 
-
-  
   let isNextButtonDisabled = true; 
   if (activeTab === "dados") {
     isNextButtonDisabled = !isDadosTabValid;
@@ -305,13 +303,52 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                   </div>
                 </TabsContent>
 
-                {/* Página 3 - Confirmar */}
-              <TabsContent value="confirmar" className="space-y-4 pt-4">
+                <TabsContent value="confirmar" className="space-y-4 pt-4">
                   <h2 className="text-xl font-semibold">Confirmação</h2>
                   <Separator />
                   <p className="text-sm text-muted-foreground">
                     Revise todos os dados inseridos nas abas anteriores. Se tudo estiver correto, clique em "Salvar OS" para finalizar.
                   </p>
+                  <div className="space-y-4 rounded-md border p-4">
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Dados Gerais</h3>
+                      <p className="text-sm">
+                        <strong>Cliente:</strong> {clientes.find(c => c.value === clienteId)?.label || "Não selecionado"}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Data do Serviço:</strong> {dataServico ? format(dataServico, "dd/MM/yyyy") : "Não selecionada"}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Horário:</strong> {horaInicio || "--:--"} às {horaTermino || "--:--"}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Periodicidade:</strong> <span className="capitalize">{periodicidade || "Não selecionada"}</span>
+                      </p>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Área</h3>
+                      <p className="text-sm">
+                        <strong>Área Tratada:</strong> {areaTratada ? `${areaTratada} m²` : "Não informado"}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Área Não Construída:</strong> {areaNaoConstruida ? `${areaNaoConstruida} m²` : "Não informado"}
+                      </p>
+                    </div>
+
+                    <Separator />
+                    <div className="space-y-1">
+                      <h3 className="font-semibold">Detalhes do Serviço</h3>
+                      <p className="text-sm">
+                        <strong>Status:</strong> {status === "1" ? "Aberto" : status === "2" ? "Em Andamento" : status === "3" ? "Concluído" : "Cancelado"}
+                      </p>
+                      <p className="text-sm">
+                        <strong>Tipo:</strong> {tipo === "1" ? "Contrato" : tipo === "2" ? "Serviço" : "Manutenção"}
+                      </p>
+                    </div>
+                  </div>
                 </TabsContent>
               </Tabs>
             </CardContent>

@@ -1,18 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// 1. IMPORTAMOS O 'useParams'
 import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
-// Supondo que seu formulário reutilizável se chame 'FormularioFuncionario'
 import FormularioFuncionario from "../../cadastrar/page";
 
-// 2. REMOVEMOS 'params' DAS PROPRIEDADES DA FUNÇÃO
 export default function EditarFuncionarioPage() {
   const router = useRouter();
-  // 3. USAMOS O HOOK PARA PEGAR OS PARÂMETROS DA URL
   const params = useParams(); 
 
   const [funcionarioData, setFuncionarioData] = useState<any>(null);
@@ -20,7 +16,6 @@ export default function EditarFuncionarioPage() {
 
   useEffect(() => {
     async function fetchFuncionario() {
-      // O 'params.id' agora vem do hook useParams
       const funcionarioId = parseInt(params.id as string, 10);
 
       if (isNaN(funcionarioId)) {
