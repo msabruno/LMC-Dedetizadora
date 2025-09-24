@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getTodosClientes, deletarCliente } from "@/lib/supabase/actions";
@@ -35,7 +35,6 @@ export default function ListarClientesPage() {
     const sucesso = await deletarCliente(id);
     if (sucesso) {
       toast.success("Cliente excluído com sucesso!");
-      // Atualiza a lista sem F5
       setClientes(prev => prev.filter(c => c.cli_id !== id));
       setTotalClientes(prev => prev - 1);
     } else {
@@ -78,10 +77,12 @@ export default function ListarClientesPage() {
                       <TableCell>{formatTelefone(cliente.cli_telefone || "N/A")}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="outline" size="sm" className="cursor-pointer">
-                            <Pencil className="h-4 w-4 mr-1" />
-                            Editar
-                          </Button>
+                        <Link href={`/dashboard/clientes/editar/${cliente.cli_id}`}>
+                        <Button variant="outline" size="sm" className="cursor-pointer">
+                          <Pencil className="h-4 w-4 mr-1" />
+                          Editar
+                        </Button>
+                        </Link>
                           <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => handleDelete(cliente.cli_id)}>
                             <Trash className="h-4 w-4 mr-1" />
                             Deletar

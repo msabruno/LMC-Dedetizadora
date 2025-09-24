@@ -1,42 +1,59 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import CadastrarClientePage from "../../cadastrar/page";
+import { toast } from "sonner";
 
+import FormularioCliente from "../../cadastrar/page";
 
-export default function EditarFuncionario({ params }: { params: { id: string } }) {
+export default function EditarClientePage() {
   const router = useRouter();
-  const [cliData, setCliData] = useState<any>(null);
+  const params = useParams(); 
+
+  const [clienteData, setClienteData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      const supabase = createClient();
-      const cliId = parseInt(params.id, 10);
+    async function fetchCliente() {
+      const clienteId = parseInt(params.id as string, 10);
 
-      const { data: funcionario, error } = await supabase
-        .from("cliente")
-        .select("*")
-        .eq("cli_id", cliId)
-        .single();
-
-      if (error) {
-        console.error(error.message);
-        alert("Erro ao carregar funcionário.");
+      if (isNaN(clienteId)) {
+        toast.error("ID de cliente inválido.");
         router.push("/dashboard/clientes");
         return;
       }
 
-      setCliData(funcionario);
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("cliente")
+        .select("*")
+        .eq("cli_id", clienteId)
+        .single();
+
+      if (error || !data) {
+        console.error("Erro ao carregar dados do cliente:", error?.message);
+        toast.error("Erro ao carregar os dados do cliente.");
+        router.push("/dashboard/clientes");
+        return;
+      }
+
+      setClienteData(data);
       setLoading(false);
     }
 
-    fetchData();
+    if (params.id) {
+      fetchCliente();
+    }
   }, [params.id, router]);
 
-  if (loading) return <div>Carregando...</div>;
+  if (loading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center p-8">
+        Carregando dados do cliente...
+      </div>
+    );
+  }
 
-  return <CadastrarClientePage initialValues={cliData} />;
+  return <FormularioCliente initialValues={clienteData} />;
 }
