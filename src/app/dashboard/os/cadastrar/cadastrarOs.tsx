@@ -41,6 +41,8 @@ interface FormularioOSProps {
 export default function FormularioOS({ clientes = [], initialValues }: FormularioOSProps) {
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = React.useState("dados");
+
   const [clienteId, setClienteId] = React.useState<string | undefined>(
     initialValues?.os_cli_id !== undefined ? String(initialValues.os_cli_id) : undefined
   );
@@ -68,10 +70,11 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [clienteOpen, setClienteOpen] = React.useState(false);
 
+  const isDadosTabValid = clienteId && dataServico && horaInicio && horaTermino && periodicidade;
+  const isAreaTabValid = areaTratada && areaNaoConstruida;
   const isFormInvalid = !clienteId || !dataServico || !periodicidade;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsSubmitting(true);
 
     if (isFormInvalid) {
@@ -116,6 +119,29 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
     }
   };
 
+   const handleNextTab = () => {
+    if (activeTab === "dados" && !isDadosTabValid) {
+      toast.error("Preencha todos os campos da aba 'Dados Gerais' para avançar.");
+      return;
+    }
+    if (activeTab === "area" && !isAreaTabValid) {
+      toast.error("Preencha os campos da aba 'Área' para avançar.");
+      return;
+    }
+
+    if (activeTab === "dados") setActiveTab("area");
+    if (activeTab === "area") setActiveTab("confirmar");
+  };
+
+
+  
+  let isNextButtonDisabled = true; 
+  if (activeTab === "dados") {
+    isNextButtonDisabled = !isDadosTabValid;
+  } else if (activeTab === "area") {
+    isNextButtonDisabled = !isAreaTabValid;
+  }
+
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div className="w-full max-w-4xl space-y-6">
@@ -129,14 +155,13 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
         </div>
 
         <Card>
-          <form onSubmit={handleSubmit}>
+          <form>
             <CardContent className="pt-8">
-              <Tabs defaultValue="dados">
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="dados" className="cursor-pointer">Dados Gerais</TabsTrigger>
-                  <TabsTrigger value="area" className="cursor-pointer">Área</TabsTrigger>
-                  <TabsTrigger value="periodicidade" className="cursor-pointer">Periodicidade</TabsTrigger>
-                  <TabsTrigger value="confirmar" className="cursor-pointer">Confirmar</TabsTrigger>
+              <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="dados">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="dados">Dados Gerais</TabsTrigger>
+                  <TabsTrigger value="area">Área</TabsTrigger>
+                  <TabsTrigger value="confirmar">Confirmar</TabsTrigger>
                 </TabsList>
 
                 {/* Página 1 - Dados Gerais */}
@@ -187,46 +212,50 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                       <Label>Data do Serviço</Label>
                       <DateInputPicker value={dataServico} onChange={setDataServico} />
                     </div>
-                    <div className="grid md:grid-cols-3">
-                      <div className="space-y-2">
-                          <Label>Peridiocidade</Label>
-                          <Select value={periodicidade} onValueChange={setPeriodicidade}>
-                            <SelectTrigger><SelectValue placeholder="Selecione a periodicidade" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="unica">Aplicação Única</SelectItem>
-                              <SelectItem value="mensal">Mensal</SelectItem>
-                              <SelectItem value="bimestral">Bimestral</SelectItem>
-                              <SelectItem value="trimestral">Trimestral</SelectItem>
-                              <SelectItem value="semestral">Semestral</SelectItem>
-                            </SelectContent>
-                          </Select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label>Status</Label>
-                        <Select value={status} onValueChange={setStatus}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">Aberto</SelectItem>
-                            <SelectItem value="2">Em Andamento</SelectItem>
-                            <SelectItem value="3">Concluído</SelectItem>
-                            <SelectItem value="4">Cancelado</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Tipo</Label>
-                        <Select value={tipo} onValueChange={setStatus}>
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="1">Contrato</SelectItem>
-                            <SelectItem value="2">Serviço</SelectItem>
-                            <SelectItem value="3">Manutenção</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <Label>Periodicidade</Label>
+                      <Select value={periodicidade} onValueChange={setPeriodicidade}>
+                        <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="unica">Aplicação Única</SelectItem>
+                          <SelectItem value="mensal">Mensal</SelectItem>
+                          <SelectItem value="bimestral">Bimestral</SelectItem>
+                          <SelectItem value="trimestral">Trimestral</SelectItem>
+                          <SelectItem value="semestral">Semestral</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div className="grid md:grid-cols-2  gap-y-2">
+                    
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <Select value={status} onValueChange={setStatus}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">Aberto</SelectItem>
+                          <SelectItem value="2">Em Andamento</SelectItem>
+                          <SelectItem value="3">Concluído</SelectItem>
+                          <SelectItem value="4">Cancelado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Tipo</Label>
+                      <Select value={tipo} onValueChange={setTipo}> 
+                        <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">Contrato</SelectItem>
+                          <SelectItem value="2">Serviço</SelectItem>
+                          <SelectItem value="3">Manutenção</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2  gap-y-2 space-y-2">
                       <div className="space-y-1">
                         <Label>Hora início</Label>
                         <Input
@@ -248,8 +277,6 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                       </div>
                     </div>
 
-                  </div>
-                  
                 </TabsContent>
 
                 {/* Página 2 - Área */}
@@ -278,18 +305,13 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                   </div>
                 </TabsContent>
 
-                {/* Página 3 - Periodicidade */}
-                <TabsContent value="periodicidade" className="space-y-4 pt-4">
-                  <h2 className="text-xl font-semibold">Periodicidade</h2>
-                  <Separator />
-                  
-                </TabsContent>
-
-                {/* Página 4 - Confirmar */}
-                <TabsContent value="confirmar" className="space-y-4 pt-4">
+                {/* Página 3 - Confirmar */}
+              <TabsContent value="confirmar" className="space-y-4 pt-4">
                   <h2 className="text-xl font-semibold">Confirmação</h2>
                   <Separator />
-                  <p>Revise os dados antes de salvar.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Revise todos os dados inseridos nas abas anteriores. Se tudo estiver correto, clique em "Salvar OS" para finalizar.
+                  </p>
                 </TabsContent>
               </Tabs>
             </CardContent>
@@ -298,9 +320,21 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
               <Button variant="outline" type="button" onClick={() => router.back()}>
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isFormInvalid || isSubmitting}>
-                {isSubmitting ? "Salvando..." : "Salvar OS"}
-              </Button>
+              {activeTab !== "confirmar" ? (
+                <Button type="button" onClick={handleNextTab} disabled={isNextButtonDisabled}>
+                  Avançar
+                </Button>
+
+              ) : (
+                <Button 
+                  type="button" 
+                  onClick={handleSubmit} 
+                  disabled={!isDadosTabValid || !isAreaTabValid || isSubmitting}
+                >
+                  {isSubmitting ? "Salvando..." : "Salvar OS"}
+                </Button>
+              )}
+
             </CardFooter>
           </form>
         </Card>
