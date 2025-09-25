@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
-
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -20,7 +20,6 @@ import { DateInputPicker } from "@/components/ui/date-input-picker";
 import { createClient } from "@/lib/supabase/client";
 
 type Cliente = { value: string; label: string };
-
 interface OrdemDeServico {
   os_id: number;
   os_cli_id: number | string;
@@ -32,17 +31,29 @@ interface OrdemDeServico {
   os_hora_inicio: string;
   os_hora_termino: string
 }
-
 interface FormularioOSProps {
   clientes?: Cliente[];
-  initialValues?: OrdemDeServico;
+  initialValues?: OrdemDeServico & { os_tratamento?: any };
 }
+
+const SERVICOS_REALIZADOS = ["DESINSETIZAÇÃO", "DESRATIZAÇÃO", "DESCUPINIZAÇÃO", "EXPURGO", "OUTROS"];
+const OPCOES_DESRATIZACAO = {
+  venenos: ["Brodifacoum (Granulado)", "Brodifacoum (Parafinado)", "Brodifacoum (Pó)"],
+  metodos: ["Iscagem Formulada", "Iscagem Granulada", "Iscagem Parafinada", "Pó de Contato"],
+};
+const OPCOES_DESINSETIZACAO = {
+  venenos: ["Lambda cyhalothryn (Líquido)", "Deltamethym (Líquido)", "Hidramethylnon (Gel)"],
+  metodos: ["Pulverização", "Aatomização", "Termonebulização", "Pó", "Gel"],
+};
+const OPCOES_DESCUPINIZACAO = {
+  venenos: ["Fipronil (Líquido)", "Permetrina (Líquido)"],
+  metodos: ["Injetável", "Pincelamento", "Pulverização Simples"],
+};
 
 export default function FormularioOS({ clientes = [], initialValues }: FormularioOSProps) {
   const router = useRouter();
 
   const [activeTab, setActiveTab] = React.useState("dados");
-
   const [clienteId, setClienteId] = React.useState<string | undefined>(
     initialValues?.os_cli_id !== undefined ? String(initialValues.os_cli_id) : undefined
   );
@@ -69,20 +80,49 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [clienteOpen, setClienteOpen] = React.useState(false);
-
-  const isDadosTabValid = clienteId && dataServico && horaInicio && horaTermino && periodicidade;
-  const isAreaTabValid = areaTratada && areaNaoConstruida;
   const isFormInvalid = !clienteId || !dataServico || !periodicidade;
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
+  const [servicosSelecionados, setServicosSelecionados] = React.useState<string[]>(initialValues?.os_tratamento?.servicos || []);
+  const [opcoesDetalhadas, setOpcoesDetalhadas] = React.useState(
+    initialValues?.os_tratamento || {
+      desratizacao: { venenos: [], metodos:[] },
+      desinsetizacao: { venenos: [], metodos: [] },
+      descupinizacao: { venenos: [], metodos: [] },
+    }
+  );
 
-    if (isFormInvalid) {
-      toast.error("Preencha todos os campos obrigatórios.");
-      setIsSubmitting(false);
+  const isDadosTabValid = !!clienteId && !!dataServico && !!horaInicio && !!horaTermino && !!periodicidade;
+  const isAreaTabValid = !!areaTratada && !!areaNaoConstruida;
+  const isTratamentoTabValid = servicosSelecionados.length > 0; // Exige que pelo menos um serviço seja selecionado
+
+  const handleServicoChange = (servico: string, checked: boolean) => {
+    setServicosSelecionados(prev => checked ? [...prev, servico] : prev.filter(s => s !== servico));
+  };
+
+  const handleOpcaoChange = (servico: keyof typeof opcoesDetalhadas, tipo: 'venenos' | 'metodos', opcao: string, checked: boolean) => {
+    setOpcoesDetalhadas(prev => ({
+      ...prev,
+      [servico]: { ...prev[servico], [tipo]: checked ? [...prev[servico][tipo], opcao] : prev[servico][tipo].filter(v => v !== opcao) },
+    }));
+  };
+
+const handleNextTab = () => {
+    if (activeTab === "dados") setActiveTab("area");
+    if (activeTab === "area") setActiveTab("tratamento");
+    if (activeTab === "tratamento") setActiveTab("confirmar");
+  };
+
+  let isNextButtonDisabled = true;
+    if (activeTab === "dados") isNextButtonDisabled = !isDadosTabValid;
+    else if (activeTab === "area") isNextButtonDisabled = !isAreaTabValid;
+    else if (activeTab === "tratamento") isNextButtonDisabled = !isTratamentoTabValid;
+
+const handleSubmit = async () => {
+    if (!isDadosTabValid || !isAreaTabValid || !isTratamentoTabValid) {
+      toast.error("Preencha todos os campos obrigatórios de todas as abas.");
       return;
     }
-
+    setIsSubmitting(true);
     try {
       const supabase = createClient();
       const dadosOS = {
@@ -92,8 +132,10 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
         os_area_tratada: parseFloat(areaTratada) || 0,
         os_area_nao_construida: parseFloat(areaNaoConstruida) || 0,
         os_periodicidade_caixa_esgoto: periodicidade!,
+        os_hora_inicio: horaInicio,
+        os_hora_termino: horaTermino,
+        os_tratamento: opcoesDetalhadas,
       };
-
       let error: any;
       if (initialValues) {
         const { error: updateError } = await supabase
@@ -102,10 +144,11 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
           .eq("os_id", initialValues.os_id);
         error = updateError;
       } else {
-        const { error: insertError } = await supabase.from("ordem_servico").insert([dadosOS]);
+        const { error: insertError } = await supabase
+          .from("ordem_servico")
+          .insert([dadosOS]);
         error = insertError;
       }
-
       if (error) {
         toast.error("Erro ao salvar OS", { description: error.message });
       } else {
@@ -118,27 +161,6 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
       setIsSubmitting(false);
     }
   };
-
-   const handleNextTab = () => {
-    if (activeTab === "dados" && !isDadosTabValid) {
-      toast.error("Preencha todos os campos da aba 'Dados Gerais' para avançar.");
-      return;
-    }
-    if (activeTab === "area" && !isAreaTabValid) {
-      toast.error("Preencha os campos da aba 'Área' para avançar.");
-      return;
-    }
-
-    if (activeTab === "dados") setActiveTab("area");
-    if (activeTab === "area") setActiveTab("confirmar");
-  };
-
-  let isNextButtonDisabled = true; 
-  if (activeTab === "dados") {
-    isNextButtonDisabled = !isDadosTabValid;
-  } else if (activeTab === "area") {
-    isNextButtonDisabled = !isAreaTabValid;
-  }
 
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
@@ -156,9 +178,10 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
           <form>
             <CardContent className="pt-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="dados">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                   <TabsTrigger value="dados">Dados Gerais</TabsTrigger>
                   <TabsTrigger value="area">Área</TabsTrigger>
+                  <TabsTrigger value="tratamento">Tratamento</TabsTrigger>
                   <TabsTrigger value="confirmar">Confirmar</TabsTrigger>
                 </TabsList>
 
@@ -253,7 +276,7 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                     </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2  gap-y-2 space-y-2">
+                    <div className="grid md:grid-cols-3  gap-y-2 space-y-2">
                       <div className="space-y-1">
                         <Label>Hora início</Label>
                         <Input
@@ -273,6 +296,7 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                           className="w-auto"
                         />
                       </div>
+
                     </div>
 
                 </TabsContent>
@@ -283,7 +307,7 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                   <Separator />
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label>Área Tratada (m²)</Label>
+                      <Label>Área Tratada Construída (m²)</Label>
                       <Input
                         type="number"
                         placeholder="Ex: 50"
@@ -292,7 +316,7 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Área Não Construída (m²)</Label>
+                      <Label>Área Tratada Não Construída (m²)</Label>
                       <Input
                         type="number"
                         placeholder="Ex: 20"
@@ -300,6 +324,55 @@ export default function FormularioOS({ clientes = [], initialValues }: Formulari
                         onChange={(e) => setAreaNaoConstruida(e.target.value)}
                       />
                     </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value='tratamento' className='space-y-4 pt-4'>
+                  <h2 className="text-xl font-semibold">Tratamento Realizado</h2>
+                  <Separator />
+                  
+                  <div className="space-y-2">
+                    <Label className="font-semibold">Serviços Realizados</Label>
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-md border p-4">
+                      {SERVICOS_REALIZADOS.map(servico => (
+                        <div key={servico} className="flex items-center space-x-2">
+                          <Checkbox 
+                            id={`servico-${servico.toLowerCase()}`}
+                            checked={servicosSelecionados.includes(servico)}
+                            onCheckedChange={(checked) => handleServicoChange(servico, !!checked)}
+                          />
+                          <Label htmlFor={`servico-${servico.toLowerCase()}`} className="font-normal cursor-pointer">{servico}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {servicosSelecionados.includes("DESRATIZAÇÃO") && (
+                      <div className="space-y-4 rounded-md border p-4 animate-in fade-in-50">
+                        <h3 className="font-semibold">DESRATIZAÇÃO</h3>
+                        <div className="space-y-2">{OPCOES_DESRATIZACAO.venenos.map(v => (<div key={v} className="flex items-center space-x-2"><Checkbox id={`desratizacao-${v}`} onCheckedChange={c => handleOpcaoChange('desratizacao', 'venenos', v, !!c)} /><Label htmlFor={`desratizacao-${v}`} className="font-normal text-sm cursor-pointer">{v}</Label></div>))}</div>
+                        <Separator />
+                        <h4 className="font-medium text-sm">MÉTODO</h4>
+                        <div className="space-y-2">{OPCOES_DESRATIZACAO.metodos.map(m => (<div key={m} className="flex items-center space-x-2"><Checkbox id={`desratizacao-${m}`} onCheckedChange={c => handleOpcaoChange('desratizacao', 'metodos', m, !!c)} /><Label htmlFor={`desratizacao-${m}`} className="font-normal text-sm cursor-pointer">{m}</Label></div>))}</div>
+                      </div>
+                    )}
+                    {servicosSelecionados.includes("DESINSETIZAÇÃO") && (
+                      <div className="space-y-4 rounded-md border p-4 animate-in fade-in-50">
+                        <h3 className="font-semibold">DESINSETIZAÇÃO</h3>
+                         <div className="space-y-2">{OPCOES_DESINSETIZACAO.venenos.map(v => (<div key={v} className="flex items-center space-x-2"><Checkbox id={`desinsetizacao-${v}`} onCheckedChange={c => handleOpcaoChange('desinsetizacao', 'venenos', v, !!c)} /><Label htmlFor={`desinsetizacao-${v}`} className="font-normal text-sm cursor-pointer">{v}</Label></div>))}</div>
+                        <Separator />
+                        <h4 className="font-medium text-sm">MÉTODO</h4>
+                        <div className="space-y-2">{OPCOES_DESINSETIZACAO.metodos.map(m => (<div key={m} className="flex items-center space-x-2"><Checkbox id={`desinsetizacao-${m}`} onCheckedChange={c => handleOpcaoChange('desinsetizacao', 'metodos', m, !!c)} /><Label htmlFor={`desinsetizacao-${m}`} className="font-normal text-sm cursor-pointer">{m}</Label></div>))}</div>
+                      </div>
+                    )}
+                    {servicosSelecionados.includes("DESCUPINIZAÇÃO") && (
+                       <div className="space-y-4 rounded-md border p-4 animate-in fade-in-50">
+                        <h3 className="font-semibold">DESCUPINIZAÇÃO (B.QUÍMICA)</h3>
+                         <div className="space-y-2">{OPCOES_DESCUPINIZACAO.venenos.map(v => (<div key={v} className="flex items-center space-x-2"><Checkbox id={`descupinizacao-${v}`} onCheckedChange={c => handleOpcaoChange('descupinizacao', 'venenos', v, !!c)} /><Label htmlFor={`descupinizacao-${v}`} className="font-normal text-sm cursor-pointer">{v}</Label></div>))}</div>
+                        <Separator />
+                        <h4 className="font-medium text-sm">MÉTODO</h4>
+                        <div className="space-y-2">{OPCOES_DESCUPINIZACAO.metodos.map(m => (<div key={m} className="flex items-center space-x-2"><Checkbox id={`descupinizacao-${m}`} onCheckedChange={c => handleOpcaoChange('descupinizacao', 'metodos', m, !!c)} /><Label htmlFor={`descupinizacao-${m}`} className="font-normal text-sm cursor-pointer">{m}</Label></div>))}</div>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
 
