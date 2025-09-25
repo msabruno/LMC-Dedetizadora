@@ -179,10 +179,10 @@ const handleSubmit = async () => {
             <CardContent className="pt-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="dados">
                 <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="dados">Dados Gerais</TabsTrigger>
-                  <TabsTrigger value="area">Área</TabsTrigger>
-                  <TabsTrigger value="tratamento">Tratamento</TabsTrigger>
-                  <TabsTrigger value="confirmar">Confirmar</TabsTrigger>
+                  <TabsTrigger value="dados" className="cursor-pointer">Dados Gerais</TabsTrigger>
+                  <TabsTrigger value="area" className="cursor-pointer">Área</TabsTrigger>
+                  <TabsTrigger value="tratamento"className="cursor-pointer">Tratamento</TabsTrigger>
+                  <TabsTrigger value="confirmar"className="cursor-pointer">Confirmar</TabsTrigger>
                 </TabsList>
 
                 {/* Página 1 - Dados Gerais */}
@@ -302,10 +302,10 @@ const handleSubmit = async () => {
                 </TabsContent>
 
                 {/* Página 2 - Área */}
-                <TabsContent value="area" className="space-y-4 pt-4">
+                <TabsContent value="area" className="space-y-4 pt-4 ">
                   <h2 className="text-xl font-semibold">Área</h2>
                   <Separator />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 space-y-4">
                     <div className="space-y-2">
                       <Label>Área Tratada Construída (m²)</Label>
                       <Input

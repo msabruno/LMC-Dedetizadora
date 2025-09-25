@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash } from "lucide-react";
 import { toast } from "sonner";
 import { formatTelefone } from "@/lib/utils";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction, AlertDialogHeader, AlertDialogFooter } from "@/components/ui/alert-dialog";
+
 
 export default function ListarClientesPage() {
   const searchParams = useSearchParams();
@@ -83,10 +85,28 @@ export default function ListarClientesPage() {
                           Editar
                         </Button>
                         </Link>
-                          <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => handleDelete(cliente.cli_id)}>
-                            <Trash className="h-4 w-4 mr-1" />
-                            Deletar
-                          </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger>
+                              <Button variant="outline" size="sm" className="cursor-pointer" >
+                                <Trash className="h-4 w-4 mr-1" />
+                                Deletar
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Tem certeza que deseja excluir o registro deste Cliente? Essa ação não pode ser desfeita.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(cliente.cli_id)} className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"> Sim, excluir</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          
                         </div>
                       </TableCell>
                     </TableRow>

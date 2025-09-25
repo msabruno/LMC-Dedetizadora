@@ -25,6 +25,8 @@ import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { formatTelefone } from "@/lib/utils";
+import { AlertDialogHeader, AlertDialogFooter } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 
 export default function ListarFuncionariosPage() {
   const searchParams = useSearchParams();
@@ -118,15 +120,33 @@ export default function ListarFuncionariosPage() {
                               Editar
                             </Button>
                           </Link>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleDelete(funcionario.fun_id)}
-                            className="cursor-pointer"
-                          >
-                            <Trash className="h-4 w-4 mr-1" />
-                            Deletar
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                
+                                className="cursor-pointer"
+                              >
+                                <Trash className="h-4 w-4 mr-1" />
+                                Deletar
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Tem certeza que deseja excluir o registro deste Funcionário? Essa ação não pode ser desfeita.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="cursor-pointer">Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(funcionario.fun_id)} className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"> Sim, excluir</AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          
                         </div>
                       </TableCell>
                     </TableRow>

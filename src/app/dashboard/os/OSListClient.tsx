@@ -1,6 +1,17 @@
 // src/app/dashboard/os/OSListClient.tsx
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
@@ -42,6 +53,7 @@ export default function OSListClient({ ordens, paginaAtual, totalPaginas }: OSLi
       toast.error("Erro ao excluir Ordem de Serviço.");
     }
   };
+
   return (
     <div className="space-y-6">
       <header>
@@ -81,9 +93,27 @@ export default function OSListClient({ ordens, paginaAtual, totalPaginas }: OSLi
                       <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => router.push(`/dashboard/os/editar/${ordem.os_id}`)}>
                         <Pencil /> Editar OS
                       </Button>
-                      <Button variant="outline" className="cursor-pointer" size="sm" onClick={() => handleDelete(ordem.os_id)}>
-                        <Trash /> Deletar OS
-                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger>
+                          <Button variant="outline" className="cursor-pointer" size="sm" >
+                            <Trash /> Deletar OS
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Tem certeza que deseja excluir essa Ordem de Serviço? Essa ação não pode ser desfeita.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(ordem.os_id)} className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"> Sim, excluir</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                      
                     </TableCell>
                   </TableRow>
                 );
