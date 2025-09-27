@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react";
 import { signIn } from '@/lib/supabase/actions';
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
@@ -34,6 +36,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
       router.push("/dashboard");
     } else {
       console.log("Erro no login:", resultado.error);
+      setError('Usuário e/ou senha incorretos.')
     }
   };
 
@@ -71,10 +74,14 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
                   <Input id="password" type="password" name='password'required placeholder='Digite sua senha' onChange={(e) => setPassword(e.target.value)}/>
                 </div>
                 <Button type="submit" className="w-full cursor-pointer">
-                  Login
+                  Entrar
                 </Button>
-                {error && <p style={{ color: "red" }}>{error}</p>}
-                
+               {error && (
+                  <Alert variant="destructive" className="mt-2">
+                    <ExclamationTriangleIcon className="h-4 w-4" />
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                )}
               </div>
               <div className="text-center text-sm">
                 Não possui uma conta?{" "}
